@@ -8,7 +8,9 @@ from Analizador import Analizador
 from tkinter import scrolledtext
 from Tokens import generarreportetokens
 from Errores import generarreporteerrores
+from Operacion import operacion
 scanner = Analizador()
+operaciones = []
 
 
 def ventanayuda():
@@ -50,10 +52,50 @@ def analizar():
         scanner.analizar(text_area.get(1.0, END))
         if (len(scanner.listaerrores)==0):
             generarreportetokens(scanner.listatokens)
+            obteneroperaciones(scanner.listatokens)
+
 
 def repoerrores():
     global scanner
     generarreporteerrores(scanner.listaerrores)
+
+def obteneroperaciones(listatokens):
+    for i in range(len(listatokens)):
+        if listatokens[i].tipo=="OPERACION" and listatokens[i+1].lexema=="=":
+            print(listatokens[i+2].lexema)
+            op = operacion(listatokens[i+2].lexema)
+            contador = i+5
+            t = listatokens[contador]
+            while t.tipo=="Numero":
+                if t.tipo == "Numero" and listatokens[contador+2].tipo=="NUMERO":
+                    op.numeros.append(listatokens[contador+2].lexema)
+                    print(listatokens[contador+2].lexema)
+                    contador+=8
+                else:
+                    break
+            if op.tipo=="SUMA":
+                for n in op.numeros:
+                    op.total+=float(n)
+                print("Total: "+ str(op.total))
+            elif op.tipo == "RESTA":
+                op.total+=float(op.numeros[0])
+                for i in range(1, len(op.numeros)):
+                    op.total-=float(op.numeros[i])
+                print("Total: "+ str(op.total))
+            elif op.tipo == "MULTIPLICACION":
+                op.total+=float(op.numeros[0])
+                for i in range(1, len(op.numeros)):
+                    op.total*=float(op.numeros[i])
+                print("Total: "+ str(op.total))
+            elif op.tipo == "DIVISION":
+                op.total+=float(op.numeros[0])
+                for i in range(1, len(op.numeros)):
+                    op.total/=float(op.numeros[i])
+                print("Total: "+ str(op.total))
+
+            operaciones.append(op)
+                    
+
 
 fileMenu = Menu(menu)
 fileMenu.add_command(label="Abrir", command=abrirarchivo)
