@@ -1,10 +1,13 @@
-from csv import QUOTE_ALL
 from clases import token, error
 
 class Analizador():
     def __init__(self):
         self.listatokens = []
         self.listaerrores = []
+        self.titulo = ""
+        self.texto = ""
+        self.t = False
+        self.ti = False
     
     def analizar(self, texto):
         self.listatokens = []
@@ -157,6 +160,7 @@ class Analizador():
                             columna+=1
                             self.listatokens.append(token(buffer, "mayor_que", linea, columna))
                             buffer=""
+                            self.t = True
                             estado = "q5"
                     elif buffer == "Funcion":
                         self.listatokens.append(token(buffer, "Funcion", linea, columna))
@@ -176,6 +180,7 @@ class Analizador():
                             columna+=1
                             self.listatokens.append(token(buffer, "mayor_que", linea, columna))
                             buffer=""
+                            self.ti = True
                             estado = "q5"
                     elif buffer == "Descripcion":
                         self.listatokens.append(token(buffer, "Descripcion", linea, columna))
@@ -320,6 +325,12 @@ class Analizador():
                     estado = "q5"
                 else:
                     self.listatokens.append(token(buffer, "CONTENIDO", linea, columna))
+                    if self.t == True:
+                        self.texto = buffer
+                        self.t = False
+                    elif self.ti == True:
+                        self.titulo = buffer
+                        self.ti = False
                     buffer = ""
                     indice-=1
                     estado = "qo"

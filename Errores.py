@@ -54,10 +54,10 @@ def tabla(listat):
 
 def crearreporte():
     global texto
-    archivo = open("Errores.html", "w", encoding="UTF-8")
+    archivo = open("ERRORES_201902259.html", "w", encoding="UTF-8")
     archivo.write(texto)
     archivo.close()
-    os.startfile("Errores.html")
+    os.startfile("ERRORES_201902259.html")
 
 def generarreporteerrores(listat):
     encabezado()

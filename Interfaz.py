@@ -9,13 +9,15 @@ from tkinter import scrolledtext
 from Tokens import generarreportetokens
 from Errores import generarreporteerrores
 from Operacion import operacion
+from Reporte import generarreporteoperaciones
+import math
 scanner = Analizador()
 operaciones = []
 
 
 def ventanayuda():
     principal.destroy()
-    ayuda()
+
 
 
 principal = None
@@ -48,11 +50,13 @@ def abrirarchivo():
 
 def analizar():
     global scanner
+    global operaciones
     if text_area.get(1.0, END)!="":
         scanner.analizar(text_area.get(1.0, END))
         if (len(scanner.listaerrores)==0):
             generarreportetokens(scanner.listatokens)
             obteneroperaciones(scanner.listatokens)
+            generarreporteoperaciones(scanner.titulo, scanner.texto, operaciones)
 
 
 def repoerrores():
@@ -60,6 +64,7 @@ def repoerrores():
     generarreporteerrores(scanner.listaerrores)
 
 def obteneroperaciones(listatokens):
+    global operaciones
     for i in range(len(listatokens)):
         if listatokens[i].tipo=="OPERACION" and listatokens[i+1].lexema=="=":
             print(listatokens[i+2].lexema)
@@ -92,15 +97,49 @@ def obteneroperaciones(listatokens):
                 for i in range(1, len(op.numeros)):
                     op.total/=float(op.numeros[i])
                 print("Total: "+ str(op.total))
+            elif op.tipo == "POTENCIA":
+                op.total+=float(op.numeros[0])
+                for i in range(1, len(op.numeros)):
+                    op.total= pow(float(op.numeros[i]),op.total)
+                print("Total: "+ str(op.total))
+            elif op.tipo == "RAIZ":
+                op.total+=float(op.numeros[1])
+                op.total= pow(op.total,float(1/float(op.numeros[0])))
+                print("Total: "+ str(op.total))
+            elif op.tipo == "INVERSO":
+                op.total=1/float(op.numeros[0])
+                print("Total: "+ str(op.total))
+            elif op.tipo == "SENO":
+                op.total=math.sin(math.radians(float(op.numeros[0])))
+                print("Total: "+ str(op.total))
+            elif op.tipo == "COSENO":
+                op.total=math.cos(math.radians(float(op.numeros[0])))
+                print("Total: "+ str(op.total))
+            elif op.tipo == "TANGENTE":
+                op.total=math.tan(math.radians(float(op.numeros[0])))
+                print("Total: "+ str(op.total))
+            elif op.tipo == "MOD":
+                op.total+=float(op.numeros[0])
+                for i in range(1, len(op.numeros)):
+                    op.total%=float(op.numeros[i])
+                print("Total: "+ str(op.total))
 
             operaciones.append(op)
                     
 
+def guardarcomo():
+    nombrearch=filedialog.asksaveasfilename(initialdir = "/",title = "Guardar como",filetypes = (("lfp files","*.lfp"),("todos los archivos","*.*")))
+    if nombrearch!='':
+        archi1=open(nombrearch+".lfp", "w", encoding="utf-8")
+        archi1.write(text_area.get("1.0", tk.END))
+        archi1.close()
+
+
 
 fileMenu = Menu(menu)
 fileMenu.add_command(label="Abrir", command=abrirarchivo)
-fileMenu.add_command(label="Guardar")
-fileMenu.add_command(label="Guardar Como")
+fileMenu.add_command(label="Guardar", command=guardarcomo)
+fileMenu.add_command(label="Guardar Como", command = guardarcomo)
 fileMenu.add_command(label="Errores", command=repoerrores)
 menu.add_cascade(label="Archivo", menu=fileMenu)
 
