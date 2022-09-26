@@ -11,12 +11,13 @@ from Errores import generarreporteerrores
 from Operacion import operacion
 from Reporte import generarreporteoperaciones
 import math
+import os
 scanner = Analizador()
 operaciones = []
 
 
 def ventanayuda():
-    principal.destroy()
+    pass
 
 
 
@@ -134,6 +135,17 @@ def guardarcomo():
         archi1.write(text_area.get("1.0", tk.END))
         archi1.close()
 
+def salir():
+    principal.destroy()
+
+def manualdeusuario():
+    os.startfile("Documentacion\Manual de Usuario.pdf")
+
+def temasdeayuda():
+    os.startfile("Documentacion\Temas de ayuda.pdf")
+
+def manualtecnico():
+    os.startfile("Documentacion\Manual Técnico.pdf")
 
 
 fileMenu = Menu(menu)
@@ -144,15 +156,15 @@ fileMenu.add_command(label="Errores", command=repoerrores)
 menu.add_cascade(label="Archivo", menu=fileMenu)
 
 editMenu = Menu(menu)
-editMenu.add_command(label="Manual de Usuario")
-editMenu.add_command(label="Manual Técnico")
-editMenu.add_command(label="Temas de Ayuda")
+editMenu.add_command(label="Manual de Usuario", command= manualdeusuario)
+editMenu.add_command(label="Manual Técnico", command=manualtecnico)
+editMenu.add_command(label="Temas de Ayuda", command=temasdeayuda)
 menu.add_cascade(label="Ayuda", menu=editMenu)
 
 #botones
 bot1 = Button(principal, text="Analizar", font="Arial 12", bg="#FFD8D4", command=analizar)
 bot1.place(x=50, y= 100)
-bot2 = Button(principal, text="Salir", font="Arial 12", bg="#FFD8D4")
+bot2 = Button(principal, text="Salir", font="Arial 12", bg="#FFD8D4", command=salir)
 bot2.place(x=150, y= 100)
 
 principal.mainloop()
