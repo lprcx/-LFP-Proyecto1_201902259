@@ -57,7 +57,19 @@ def analizar():
         if (len(scanner.listaerrores)==0):
             generarreportetokens(scanner.listatokens)
             obteneroperaciones(scanner.listatokens)
-            generarreporteoperaciones(scanner.titulo, scanner.texto, operaciones)
+            contador = 0
+            ti=""
+            t=""
+            for i in range(len(scanner.listatokens)):
+                if scanner.listatokens[i].tipo=="CONTENIDO":
+                    contador+=1
+                    if contador==1:
+                        t=scanner.listatokens[i].lexema
+                    elif contador==3:
+                        ti = scanner.listatokens[i].lexema
+
+
+            generarreporteoperaciones(ti, t, operaciones)
 
 
 def repoerrores():
